@@ -1,5 +1,6 @@
 {-# LANGUAGE ScopedTypeVariables, TupleSections, ViewPatterns,
-             RecordWildCards, FlexibleInstances, ForeignFunctionInterface #-}
+             RecordWildCards, FlexibleInstances, ForeignFunctionInterface,
+             DeriveGeneric #-}
 -------------------------------------------------------------------------------
 -- |
 -- Module     : Bindings.SVM
@@ -70,6 +71,7 @@ import qualified Data.ByteString.Lazy as B
 import qualified Data.Foldable as F
 import qualified Data.Map as Map
 
+import GHC.Generics
 
 -- | Supported SVM classifiers
 data ClassifierType =
@@ -229,8 +231,8 @@ crossvalidateRegressor rtype kernel folds dataset seed = unsafePerformIO $ do
     (m,res) <- crossvalidate (generalizeRegressor rtype) kernel folds doubleDataSet
     return (m,res)
 
-data ChehLinResult = Result {cValue, gammaValue, cvAccuracy :: !Double }
-instance NFData ChehLinResult 
+data ChehLinResult = Result {cValue, gammaValue, cvAccuracy :: !Double } deriving Generic
+instance NFData ChehLinResult
 
 -- | Train an RBF classifier using crossvalidation and parameter grid search. This is the
 --   recommended way of building classifiers for small to medium size datasets.  
